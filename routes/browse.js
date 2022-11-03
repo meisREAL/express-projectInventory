@@ -60,3 +60,29 @@ router.get('/brand/:id', brand_controller.brand_detail);
 
 //* GET request for list of brands
 router.get('/brands', brand_controller.brand_list);
+
+//! REVIEW ROUTES //
+
+//* GET request to create review
+router.get('/review/create', review_controller.review_create_get);
+
+//* POST request to create review
+router.post('/review/create', review_controller.review_create_post);
+
+//* GET request to delete review
+router.get('/review/:id/delete', review_controller.review_delete_get);
+
+//* POST request to delete review
+router.post('/review/:id/delete', review_controller.review_delete_post);
+
+//* GET request to update review
+router.get('/review/:id/update', review_controller.review_update_get);
+
+//* POST request to update review
+router.post('/review/:id/update', review_controller.review_update_post);
+
+//* GET request for a single review
+router.get('/review/:id', review_controller.review_detail);
+
+//* GET request for a list of reviews
+router.get('/reviews', review_controller.review_list);
