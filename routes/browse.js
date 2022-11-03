@@ -34,3 +34,29 @@ router.get('/phone/:id', phone_controller.phone_detail);
 
 //* GET request for list of all phone items
 router.get('/phone', phone_controller.phone_list);
+
+//! BRAND ROUTES //
+
+//* GET request for creating BRAND. THIS MUST COME BEFORE ROUTE FOR ID
+router.get('/brand/create', brand_controller.brand_create_get);
+
+//* POST request for creating brand
+router.post('/brand/create', brand_controller.brand_create_post);
+
+//* GET request to delete brand
+router.get('/brand/:id/delete', brand_controller.brand_delete_get);
+
+//* POST request to delete brand
+router.post('/brand/:id/delete', brand_controller.brand_delete_post);
+
+//* GET request to update brand
+router.get('/brand/:id/update', brand_controller.brand_update_get);
+
+//* POST request to update brand
+router.post('/brand/:id/update', brand_controller.brand_update_post);
+
+//* GET request for single brand
+router.get('/brand/:id', brand_controller.brand_detail);
+
+//* GET request for list of brands
+router.get('/brands', brand_controller.brand_list);
