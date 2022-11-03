@@ -86,3 +86,31 @@ router.get('/review/:id', review_controller.review_detail);
 
 //* GET request for a list of reviews
 router.get('/reviews', review_controller.review_list);
+
+//! SELLER ROUTES //
+
+//* GET request to create seller
+router.get('/seller/create', seller_controller.seller_create_get);
+
+//* POST request to create seller
+router.post('/seller/create', seller_controller.seller_create_post);
+
+//* GET request to delete seller
+router.get('/seller/:id/delete', seller_controller.seller_delete_get);
+
+//* POST request to delete seller
+router.post('/seller/:id/delete', seller_controller.seller_delete_post);
+
+//* GET request to update seller
+router.get('/seller/:id/update', seller_controller.seller_update_get);
+
+//* POST request to update seller
+router.post('/seller/:id/update', seller_controller.seller_update_post);
+
+//* GET request for a single seller
+router.get('/seller/:id', seller_controller.seller_detail);
+
+//* GET request for list of sellers
+router.get('/sellers', seller_controller.seller_list);
+
+module.exports = router;
