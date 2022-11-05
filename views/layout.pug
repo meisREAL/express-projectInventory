@@ -4,8 +4,8 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    div(class='relative container mx-auto')
-      div(class='flex items-center justify-between')
+    div(class='relative container border-b-2 px-5 mx-auto')
+      div(class='flex items-center justify-between mx-5')
         div(class='px-4 py-4 space-y-3 font-bold hover:text-blue-300 hover:underline cursor-pointer')
           a(href="/browse") Main 
         div(class='px-4 py-4 space-y-3 font-bold hover:text-blue-300 hover:underline cursor-pointer')
@@ -15,5 +15,5 @@ html
         div(class='px-4 py-4 space-y-3 font-bold hover:text-blue-300 hover:underline cursor-pointer')
           a(href="/browse/sellers") Sellers 
         div(class='px-4 py-4 space-y-3 font-bold hover:text-blue-300 hover:underline cursor-pointer')
-          a(href="/browse/reviews") 
+          a(href="/browse/reviews") Reviews
   block content 

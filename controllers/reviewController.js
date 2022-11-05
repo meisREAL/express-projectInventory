@@ -1,8 +1,18 @@
 const Review = require('../models/review');
 
 //* Display list of all reviews
-exports.review_list = (req, res) => {
-    res.send('Not implemented: review list');
+exports.review_list = (req, res, next) => {
+    Review.find()
+        .populate('phone')
+        .exec((err, list_reviews) => {
+            if (err) {
+                return next(err);
+            }
+            res.render('review_list', {
+                title: 'Our Reviews!',
+                review_list: list_reviews,
+            })
+        })
 };
 
 //* Display detail page for a review
