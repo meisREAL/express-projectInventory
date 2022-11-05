@@ -1,8 +1,18 @@
 const Brand = require('../models/brand');
 
 //* Display list of all Brands
-exports.brand_list = (req, res) => {
-    res.send('Not implemented: brand list');
+exports.brand_list = (req, res, next) => {
+    Brand.find()
+        .sort([['name', 'ascending']])
+        .exec((err, list_brands) => {
+            if (err) {
+                return next(err);
+            }
+            res.render('brand_list', {
+                title: 'Brands you can find',
+                brand_list: list_brands,
+            });
+        })
 };
 
 //* Display detail page for a specific Brand
