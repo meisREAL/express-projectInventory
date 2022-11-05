@@ -1,8 +1,34 @@
 const Phone = require('../models/phone');
+const Brand = require('../models/brand');
+const Seller = require('../models/seller');
+const Review = require('../models/review');
+const async = require('async');
 
 //* This will be main page (home-page)
 exports.index = (req, res) => {
-    res.send('Not implemented: Site Home page');
+    async.parallel(
+        {
+            phone_count(callback) {
+                Phone.countDocuments({}, callback);
+            },
+            brand_count(callback) {
+                Brand.countDocuments({}, callback);
+            },
+            seller_count(callback) {
+                Seller.countDocuments({}, callback);
+            },
+            review_count(callback) {
+                Review.countDocuments({}, callback);
+            }
+        },
+        (err, results) => {
+            res.render('index', {
+                title: 'GSM sellout Home Page',
+                error: err,
+                data: results,
+            })
+        }
+    );
 };
 
 //* Display list of all phones

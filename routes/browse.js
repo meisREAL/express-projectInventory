@@ -33,7 +33,7 @@ router.post('/phone/:id/update', phone_controller.phone_update_post);
 router.get('/phone/:id', phone_controller.phone_detail);
 
 //* GET request for list of all phone items
-router.get('/phone', phone_controller.phone_list);
+router.get('/phones', phone_controller.phone_list);
 
 //! BRAND ROUTES //
 

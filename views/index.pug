@@ -1,5 +1,19 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  h1(class='text-center text-xl tracking-wide font-mono p-5 mb-5 text-indigo-700')= title
+  p(class='text-center') Welcome to #{title}, where you will find everything that you don't need or want!
+  h2(class='text-center my-5 text-red-600') WE DON'T CARE
+
+  div(class='flex items-center justify-between')
+    if error 
+      p Error happened 
+    else 
+      h2(class='mx-10 px-10 text-xl') Here you will find
+        div 
+          p !{data.phone_count} phones
+          p From !{data.brand_count} different brands
+          p Which you can buy from !{data.seller_count} sellers
+          p(class='underline') With  a total of !{data.review_count} reviews
+
+    

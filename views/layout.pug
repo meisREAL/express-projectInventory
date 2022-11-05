@@ -4,4 +4,16 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    block content
+    div(class='relative container mx-auto')
+      div(class='flex items-center justify-between')
+        div(class='px-4 py-4 space-y-3 font-bold hover:text-blue-300 hover:underline cursor-pointer')
+          a(href="/browse") Main 
+        div(class='px-4 py-4 space-y-3 font-bold hover:text-blue-300 hover:underline cursor-pointer')
+          a(href="/browse/phones") Phones 
+        div(class='px-4 py-4 space-y-3 font-bold hover:text-blue-300 hover:underline cursor-pointer')
+          a(href="/browse/brands") Brands
+        div(class='px-4 py-4 space-y-3 font-bold hover:text-blue-300 hover:underline cursor-pointer')
+          a(href="/browse/sellers") Sellers 
+        div(class='px-4 py-4 space-y-3 font-bold hover:text-blue-300 hover:underline cursor-pointer')
+          a(href="/browse/reviews") 
+  block content 
