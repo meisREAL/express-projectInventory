@@ -32,8 +32,19 @@ exports.index = (req, res) => {
 };
 
 //* Display list of all phones
-exports.phone_list = (req, res) => {
-    res.send('Not implemented: phone list');
+exports.phone_list = (req, res, next) => {
+    Phone.find({}, 'model brand')
+        .sort({ model: 1 })
+        .populate('brand')
+        .exec((err, list_phones) => {
+            if (err) {
+                return next(err);
+            }
+            res.render('phone_list', {
+                title: 'Phones in stock',
+                phone_list: list_phones,
+            });
+        });
 };
 
 //* Display detail page for a phone
