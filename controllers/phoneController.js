@@ -48,8 +48,35 @@ exports.phone_list = (req, res, next) => {
 };
 
 //* Display detail page for a phone
-exports.phone_detail = (req, res) => {
-    res.send(`Not implemented: phone detail ${req.params.id}`);
+exports.phone_detail = (req, res, next) => {
+    async.parallel(
+        {
+            phone(callback) {
+                Phone.findById(req.params.id)
+                    .populate('brand')
+                    .populate('seller')
+                    .exec(callback)
+            },
+            phone_reviews(callback) {
+                Review.find({ phone: req.params.id }).exec(callback);
+            }
+        },
+        (err, results) => {
+            if (err) {
+                return next(err);
+            }
+            if (results.phone == null) {
+                const err = new Error('Phone not found');
+                err.status = 404;
+                return next(err);
+            }
+            res.render('phone_detail', {
+                title: results.phone.model,
+                phone: results.phone,
+                phone_reviews: results.phone_reviews,
+            })
+        }
+    );
 }
 
 //* Display phone create on GET
