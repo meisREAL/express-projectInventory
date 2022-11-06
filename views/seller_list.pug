@@ -1,0 +1,11 @@
+extends layout 
+
+block content
+
+    h1(class='m-10 text-center text-2xl text-blue-500')= title 
+
+    div(class='grid grid-cols-4 mx-10')
+        each seller in seller_list
+            div(class='flex flex-col border border-blue-600 m-10  p-5')
+                a(href=seller.url class='text-pink-600 underline') #{seller.seller_name}
+                

@@ -1,9 +1,19 @@
 const Seller = require('../models/seller');
 
 //* Display list of all sellers
-exports.seller_list = (req, res) => {
-    res.send('Not implemented: seller list');
-};
+exports.seller_list = (req, res, next) => {
+    Seller.find()
+        .sort([['name', 'ascending']])
+        .exec((err, list_sellers) => {
+            if (err) {
+                return next(err);
+            }
+            res.render('seller_list', {
+                title: 'Sellers that sell',
+                seller_list: list_sellers,
+            });
+        })
+}
 
 //* Display detail of seller
 exports.seller_detail = (req, res) => {
