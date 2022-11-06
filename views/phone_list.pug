@@ -3,6 +3,8 @@ extends layout
 block content
     h1(class='m-10 text-center text-2xl text-blue-500')= title 
 
+    a(href="/browse/phone/create" class='m-10 p-5 underline text-blue-500') Create new Phone 
+
     div(class='grid grid-cols-4')
         each phone in phone_list
             div(class='flex flex-col border border-blue-600 m-5 p-5')

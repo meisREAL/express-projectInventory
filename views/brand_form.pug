@@ -1,0 +1,20 @@
+extends layout 
+
+block content
+    h1= title 
+
+    form(action="", method="post" class='')
+        div(class='flex flex-col items-center p-5 m-5')
+            label(for="brand_name") Brand Name:
+            input#brand_name.form-control(type='text' placeholder='Brand name' name='brand_name' required='true' value=(undefined===brand ? '' : brand.brand_name) class='border-2')
+            label(for="about_brand") About brand:
+            input#about_brand.form-control(type="text" placeholder='About brand' name='about_brand' required='true' value=(undefined===brand ? '' : brand.about_brand) class='border-2')
+            label(for="headquarters") Headquarters:
+            input#headquarters.form-control(type="text" placeholder='headquarters' name="headquarters" required='true' value=(undefined===brand ? '' : brand.headquarters) class='border-2') 
+            label(for="year_founded") Year brand was founded: 
+            input#year_founded.form-control(type='text' placeholder='year founded' name='year_founded' required='true' value=(undefined===brand ? '' : brand.year_founded) class='border-2')
+            button(type="submit" class='bg-gray-400 px-3 m-2 rounded') Submit 
+    if errors 
+        ul 
+            for error in errors 
+                li!= error.msg

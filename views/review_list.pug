@@ -4,6 +4,8 @@ block content
 
     h1(class='m-10 text-center text-2xl text-purple-500')= title 
 
+    a(href="/browse/review/create" class='m-10 p-5 underline text-blue-500') Create new Review 
+
     div(class='grid grid-cols-4')
         each review in review_list 
             div(class='flex flex-col border border-yellow-700 m-5 p-5 bg-gray-200')

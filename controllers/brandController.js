@@ -1,6 +1,7 @@
 const Brand = require('../models/brand');
 const Phone = require('../models/phone');
 const async = require('async');
+const { body, validationResult } = require('express-validator');
 
 //* Display list of all Brands
 exports.brand_list = (req, res, next) => {
@@ -47,14 +48,62 @@ exports.brand_detail = (req, res, next) => {
 };
 
 //* Display brand create form on GET
-exports.brand_create_get = (req, res) => {
-    res.send('Not implemented: brand create GET');
+exports.brand_create_get = (req, res, next) => {
+    res.render('brand_form', { title: 'Create new Brand' });
 };
 
 //* Handle brand create on POST
-exports.brand_create_post = (req, res) => {
-    res.send('Not implemented: brand create post');
-};
+exports.brand_create_post = [
+    body('brand_name')
+        .trim()
+        .isLength({ min: 1 })
+        .escape()
+        .withMessage('Brand name must be specified'),
+    body('about_brand')
+        .trim()
+        .isLength({ min: 1 })
+        .escape()
+        .withMessage('Information must be specified'),
+    body('headquarters')
+        .trim()
+        .isLength({ min: 1 })
+        .escape()
+        .withMessage('Headquarters must be specified'),
+    body('year_founded')
+        .trim()
+        .isLength({ min: 4 })
+        .escape()
+        .withMessage('Year must be specified'),
+
+    (req, res, next) => {
+
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            res.render('brand_form', {
+                title: 'Create new Brand',
+                brand: req.body,
+                errors: errors.array(),
+            });
+            return;
+        }
+
+        const brand = new Brand({
+            brand_name: req.body.brand_name,
+            about_brand: req.body.about_brand,
+            headquarters: req.body.headquarters,
+            year_founded: req.body.year_founded,
+        });
+
+        brand.save((err) => {
+            if (err) {
+                return next(err);
+            }
+            res.redirect(brand.url)
+        })
+    }
+
+];
 
 //* Display Brand delete on get
 exports.brand_delete_get = (req, res) => {
