@@ -1,0 +1,21 @@
+extends layout 
+
+block content
+    h1= title
+
+    form(action="", method="post" class='')
+        div(class='flex flex-col items-center p-5 m-5')
+            label(for="seller_name") Seller Name:
+            input#seller_name.form-control(type='text' placeholder='Sellers name' name='seller_name' required='true' value=(undefined===seller ? '' : seller.seller_name) class='border-2')
+            label(for="seller_address") Address:
+            input#seller_address.form-control(type="text" placeholder='Seller Address' name='seller_address' required='true' value=(undefined===seller ? '' : seller.seller_address) class='border-2')
+            label(for="seller_info") Information about:
+            input#seller_info.form-control(type="textarea" placeholder='Seller info' name="seller_info" required='true' value=(undefined===seller ? '' : seller.seller_info) class='border-2') 
+            label(for="seller_site") Seller Website: 
+            input#seller_site.form-control(type='text' placeholder='Website' name='seller_site' required='true' value=(undefined===seller ? '' : seller.seller_site) class='border-2')
+            button(type="submit" class='bg-gray-400 px-3 m-2 rounded') Submit 
+    if errors 
+        ul 
+            for error in errors 
+                li!= error.msg
+            

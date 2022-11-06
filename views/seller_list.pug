@@ -2,7 +2,9 @@ extends layout
 
 block content
 
-    h1(class='m-10 text-center text-2xl text-blue-500')= title 
+    h1(class='m-10 text-center text-2xl text-blue-500')= title
+
+    a(href="/browse/seller/create" class='m-10 p-5 underline text-blue-500') Create new Seller  
 
     div(class='grid grid-cols-4 mx-10')
         each seller in seller_list

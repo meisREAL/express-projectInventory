@@ -16,8 +16,23 @@ exports.review_list = (req, res, next) => {
 };
 
 //* Display detail page for a review
-exports.review_detail = (req, res) => {
-    res.send('Not implemented: review detail');
+exports.review_detail = (req, res, next) => {
+    Review.findById(req.params.id)
+        .populate('phone')
+        .exec((err, review) => {
+            if (err) {
+                return next(err);
+            }
+            if (review = null) {
+                const err = new Error('Review not found');
+                err.status = 404;
+                return next(err)
+            }
+            res.render('review_detail', {
+                title: 'Review',
+                review,
+            })
+        });
 };
 
 //* Display review create form on get
