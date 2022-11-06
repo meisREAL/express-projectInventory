@@ -1,0 +1,33 @@
+extends layout 
+
+block content
+
+    h1= title
+
+    form(action="", method="post") 
+        div(class='flex flex-col items-center p-5 m-5') 
+            label(for="model") Model: 
+            input#model.form-control(type='text' placeholder='phone model' name='model' required='true' value=(undefined===phone ? '' : phone.model))
+            label(for="brand") Brand:
+            select#brand.form-control(type='select' placeholder='Select brand' name='brand' required='true')
+                - brands.sort(function(a, b) {let textA = a.brand_name.toUpperCase(); let textB = b.brand_name.toUpperCase(); return (textA < textB) ? 1 : (textA > textB) ? 1 : 0;});
+                    for brand in brands 
+                        if phone
+                            option(value=brand._id selected=(brand._id.toString()===phone.brand._id.toString() ? 'selected' : false)) #{brand.brand_name}
+                        else 
+                         option(value=brand._id) #{brand.brand_name}
+            label(for="description") Description: 
+            textarea#description.form-control(type='textarea' placeholder='Description' name='description' required='true') #{undefined===phone ? '' : phone.description}
+            label(for="seller") Seller: 
+            select#seller.form-control(type='select' placeholder='Select Seller' name='seller' required='true')
+                - sellers.sort(function(a,b){let textA = a.seller_name.toUpperCase(); let textB = b.seller_name.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
+                    for seller in sellers   
+                        if phone    
+                            option(value=seller._id selected=(seller._id.toString()===phone.seller._id.toString() ? 'selected' : false)) #{seller.seller_name}
+                        else 
+                            option(value="seller._id") #{seller.seller_name}
+            button(type="submit" class='bg-gray-400 px-3 m-2 rounded') Submit 
+    if errors 
+        ul 
+            for error in errors 
+                li!= error.msg

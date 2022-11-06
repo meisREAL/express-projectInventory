@@ -3,6 +3,9 @@ const Brand = require('../models/brand');
 const Seller = require('../models/seller');
 const Review = require('../models/review');
 const async = require('async');
+const { body, validationResult } = require("express-validator");
+const res = require('express/lib/response');
+
 
 //* This will be main page (home-page)
 exports.index = (req, res) => {
@@ -80,14 +83,92 @@ exports.phone_detail = (req, res, next) => {
 }
 
 //* Display phone create on GET
-exports.phone_create_get = (req, res) => {
-    res.send('Not implemented: phone create get');
+exports.phone_create_get = (req, res, next) => {
+    async.parallel(
+        {
+            sellers(callback) {
+                Seller.find(callback);
+            },
+            brands(callback) {
+                Brand.find(callback);
+            },
+        },
+
+        (err, results) => {
+            if (err) {
+                return next(err);
+            }
+            res.render('phone_form', {
+                title: 'Create Phone',
+                sellers: results.sellers,
+                brands: results.brands,
+            });
+        }
+    );
 };
 
 //* Handle phone create on POST
-exports.phone_create_post = (req, res) => {
-    res.send('Not implemented: phone create post');
-};
+exports.phone_create_post = [
+    body('model', 'Model must be specified')
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    body('brand', 'Brand must be specified')
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    body('description', 'Phone must have a description')
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    body('seller', 'Seller must be specified')
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+
+        const phone = new Phone({
+            model: req.body.model,
+            brand: req.body.brand,
+            description: req.body.description,
+            seller: req.body.seller,
+        });
+
+        if (!errors.isEmpty()) {
+            async.parallel(
+                {
+                    sellers(callback) {
+                        Seller.find(callback);
+                    },
+                    brands(callback) {
+                        Brand.find(callback);
+                    },
+                },
+                (err, results) => {
+                    if (err) {
+                        return next(err);
+                    }
+                    res.render({
+                        title: 'Create Phone',
+                        sellers: results.sellers,
+                        brands: results.brands,
+                        phone,
+                        errors: errors.array(),
+                    });
+                }
+            );
+            return;
+        }
+        phone.save((err) => {
+            if (err) {
+                return next(err);
+            }
+            res.redirect(phone.url);
+        });
+    },
+];
 
 //* Display phone delete FORM on GET
 exports.phone_delete_get = (req, res) => {
