@@ -1,0 +1,18 @@
+extends layout 
+
+block content
+
+    h1(class='text-center m-5 p-5 text-2xl text-green-600') #{seller.seller_name}
+
+    div(class='flex flex-col items-center m-5 p-5 space-y-6')
+        div(class='')
+            h3 You can find them at #{seller.seller_address}
+        div(class='max-w-xl text-center')
+            p #{seller.seller_info}
+        div(class='')
+            a(href="#" class='underline text-indigo-300') #{seller.seller_site}
+
+    div(class='flex m-5 p-5 justify-center')
+         each phone in seller_phones
+            div(class='border rounded m-3 p-3 hover:bg-violet-400')
+                a(href=phone.url)  #{phone.model}

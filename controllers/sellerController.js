@@ -1,4 +1,6 @@
 const Seller = require('../models/seller');
+const Phone = require('../models/phone');
+const async = require('async');
 
 //* Display list of all sellers
 exports.seller_list = (req, res, next) => {
@@ -16,8 +18,32 @@ exports.seller_list = (req, res, next) => {
 }
 
 //* Display detail of seller
-exports.seller_detail = (req, res) => {
-    res.send(`Not implemented: seller detail ${req.params.id}`);
+exports.seller_detail = (req, res, next) => {
+    async.parallel(
+        {
+            seller(callback) {
+                Seller.findById(req.params.id).exec(callback);
+            },
+            seller_phones(callback) {
+                Phone.find({ seller: req.params.id }).exec(callback);
+            },
+        },
+        (err, results) => {
+            if (err) {
+                return next(err);
+            }
+            if (results.seller == null) {
+                const err = new Error('Seller not found');
+                err.status = 404;
+                return next(err);
+            }
+            res.render('seller_detail', {
+                title: 'Seller details',
+                seller: results.seller,
+                seller_phones: results.seller_phones,
+            });
+        }
+    );
 };
 
 //* Display Seller create on GET
