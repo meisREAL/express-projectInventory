@@ -1,0 +1,22 @@
+extends layout
+
+block content
+
+    h1=title
+
+    form(action="", method="post") 
+        div(class='flex flex-col items-center p-5 m-5')
+            label(for="phone") Phone: 
+            select#phone.form-control(type='select' placeholder='select phone' name='phone' required='true')
+                - phone_list.sort(function(a,b){let textA = a.model.toUpperCase(); let textB = b.model.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
+                for phone in phone_list 
+                    option(value=phone._id, selected=(selected_phone==phone._id.toString() ? 'selected' : false)) #{phone.model}  
+            label(for="review_summary") Summary:
+            textarea#review_summary.form-control(type='textarea' placeholder='Summary' name='review_summary' required='true')
+            label(for="reviewer") Reviewer: 
+            input#reviewer.form-control(type='text' placeholder='Reviewer' name='reviewer' required='true' value=(undefined===review ? '' : review.reviewer)) 
+            button(type="submit" class='bg-gray-400 px-3 m-2 rounded') Submit 
+    if errors 
+        ul 
+            for error in errors 
+                li!= error.msg

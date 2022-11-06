@@ -1,4 +1,7 @@
 const Review = require('../models/review');
+const Phone = require('../models/phone');
+const { body, validationResult } = require("express-validator");
+
 
 //* Display list of all reviews
 exports.review_list = (req, res, next) => {
@@ -36,14 +39,65 @@ exports.review_detail = (req, res, next) => {
 };
 
 //* Display review create form on get
-exports.review_create_get = (req, res) => {
-    res.send('Not implemented: review create get');
+exports.review_create_get = (req, res, next) => {
+    Phone.find({}, 'model').exec((err, phones) => {
+        if (err) {
+            return next(err);
+        }
+        res.render('review_form', {
+            title: 'Create Review',
+            phone_list: phones,
+        });
+    });
 };
 
 //* Handle review create post
-exports.review_create_post = (req, res) => {
-    res.send('Not implemented: review create post');
-};
+exports.review_create_post = [
+    body('phone', 'Phone must be specified')
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    body('review_summary', 'Review must be specified')
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    body('reviewer', 'Reviewer must be specified')
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+
+        const review = new Review({
+            phone: req.body.phone,
+            review_summary: req.body.review_summary,
+            reviewer: req.body.reviewer,
+        });
+
+        if (!errors.isEmpty()) {
+            Phone.find({}, 'model').exec(function (err, phones) {
+                if (err) {
+                    return next(err);
+                }
+                res.render({
+                    title: 'Create Review',
+                    phone_list: phones,
+                    selected_phone: review.phone._id,
+                    errors: errors.array(),
+                    review,
+                });
+            });
+            return;
+        }
+        review.save((err) => {
+            if (err) {
+                return (err);
+            }
+            res.redirect(review.url);
+        });
+    },
+];
 
 //* Display review delete on get
 exports.review_delete_get = (req, res) => {
