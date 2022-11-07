@@ -173,11 +173,74 @@ exports.seller_delete_post = (req, res, next) => {
 };
 
 //* Display seller update form on GET
-exports.seller_update_get = (req, res) => {
-    res.send('Not implemented: seller update get');
+exports.seller_update_get = (req, res, next) => {
+    Seller.findById(req.params.id, (err, seller) => {
+        if (err) {
+            return next(err);
+        }
+        if (seller == null) {
+            const err = new Error('Seller not found');
+            err.status = 404;
+            return next(err);
+        }
+        res.render('seller_form', {
+            title: 'Update Seller',
+            seller: seller,
+        });
+    })
 };
 
 //* Handle seller update on POST
-exports.seller_update_post = (req, res) => {
-    res.send('Not implemented: seller update post');
-};
+exports.seller_update_post = (req, res) => [
+    body('seller_name')
+        .trim()
+        .isLength({ min: 1 })
+        .escape()
+        .withMessage('Seller name must be specified'),
+    body('seller_address')
+        .trim()
+        .isLength({ min: 3 })
+        .escape()
+        .withMessage('Address must be specified'),
+    body('seller_info')
+        .trim()
+        .isLength({ min: 3 })
+        .escape()
+        .withMessage('Info must be specified'),
+    body('seller_site')
+        .trim()
+        .isLength({ min: 3 })
+        .escape()
+        .withMessage('Website must be specified'),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+
+        const seller = new Seller({
+            seller_name: req.body.seller_name,
+            seller_address: req.body.seller_address,
+            seller_info: req.body.seller_info,
+            seller_site: req.body.seller_site,
+        });
+
+        if (!errors.isEmpty()) {
+            res.render('seller_form', {
+                title: 'Update Seller',
+                seller: seller,
+                errors: errors.array(),
+            })
+            return;
+        }
+        Seller.findByIdAndUpdate(
+            req, params.id,
+            seller,
+            {},
+            (err, theseller) => {
+                if (err) {
+                    return next(err);
+                }
+                res.redirect(theseller.url);
+            }
+        );
+    }
+];
