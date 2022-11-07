@@ -1,0 +1,15 @@
+extends layout 
+
+block content
+
+    h1(class='text-center m-5 p-5 text-2xl text-green-600') #{review.reviewer}
+
+    div(class='flex flex-col items-center m-5 p-5 space-y-6')
+        div(class='')
+            h3 Phone: #{review.phone.model}
+        div(class='max-w-xl text-center')
+            p #{review.review_summary}
+        
+
+    p 
+        a(href=review.url+'/delete' class='mx-10 p-2 border rounded-xl bg-red-200 hover:bg-red-600') Delete review 

@@ -1,0 +1,14 @@
+extends layout
+
+block content
+
+    h1(class='text-center text-lg m-5') #{title}: #{review.reviewer}
+
+    
+    p(class='m-10') Do you really want to delete this REVIEW?
+
+        form(method="POST")
+            div(class='m-5 p-5')
+                input#reviewid.form-control(type='hidden' name='reviewid' required='true' value=review._id)
+
+            button(type='submit' class='m-5 underline text-red-300 hover:text-red-700') DELETE  

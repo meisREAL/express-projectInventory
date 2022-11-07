@@ -3,6 +3,7 @@ const Phone = require('../models/phone');
 const { body, validationResult } = require("express-validator");
 
 
+
 //* Display list of all reviews
 exports.review_list = (req, res, next) => {
     Review.find()
@@ -26,16 +27,16 @@ exports.review_detail = (req, res, next) => {
             if (err) {
                 return next(err);
             }
-            if (review = null) {
+            if (review == null) {
                 const err = new Error('Review not found');
                 err.status = 404;
-                return next(err)
+                return next(err);
             }
             res.render('review_detail', {
-                title: 'Review',
+                title: 'Review stuff here',
                 review,
             })
-        });
+        })
 };
 
 //* Display review create form on get
@@ -100,13 +101,29 @@ exports.review_create_post = [
 ];
 
 //* Display review delete on get
-exports.review_delete_get = (req, res) => {
-    res.send('Not implemented: review delete get');
+exports.review_delete_get = (req, res, next) => {
+    Review.findById(req.params.id).exec((err, review) => {
+        if (err) {
+            return next(err);
+        }
+        if (review == null) {
+            res.redirect('/browse/reviews');
+        }
+        res.render('review_delete', {
+            title: 'Delete Review',
+            review,
+        });
+    });
 };
 
 //* Handle review delete on POST
-exports.review_delete_post = (req, res) => {
-    res.send('Not implemented: review delete post');
+exports.review_delete_post = (req, res, next) => {
+    Review.findByIdAndRemove(req.body.reviewid, (err) => {
+        if (err) {
+            return next(err);
+        }
+        res.redirect('/browse/reviews')
+    })
 };
 
 //* Display review update form on GET
