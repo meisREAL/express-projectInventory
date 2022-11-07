@@ -16,3 +16,7 @@ block content
         each phone in seller_phones
             div(class='border rounded m-3 p-3 hover:bg-violet-400')
                 a(href=phone.url)  #{phone.model}
+
+    
+    p 
+        a(href=seller.url+'/delete' class='mx-10 p-2 border rounded-xl bg-red-200 hover:bg-red-600') Delete seller 

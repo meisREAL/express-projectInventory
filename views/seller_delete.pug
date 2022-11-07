@@ -1,0 +1,28 @@
+extends layout
+
+block content
+
+    h1(class='text-center text-lg m-5') #{title}: #{seller.seller_name}
+
+    if seller_phones.length 
+
+        p(class='m-10') #[strong Delete the following phones before attempting to delete this seller.]
+
+        div(class='m-5 p-2')
+
+            h4 Phones
+
+            dl 
+            each phone in seller_phones
+                dt 
+                    a(href=phone.url) #{phone.model}
+                dd #{phone.description}  
+
+    else 
+        p(class='m-10') Do you really want to delete this Seller?
+
+        form(method="POST")
+            div(class='m-5 p-5')
+                input#sellerid.form-control(type='hidden' name='sellerid' required='true' value=seller._id)
+
+            button(type='submit' class='m-5 underline text-red-300 hover:text-red-700') DELETE  

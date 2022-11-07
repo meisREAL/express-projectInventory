@@ -106,13 +106,69 @@ exports.seller_create_post = [
 ];
 
 //* Display seller delete form on GET
-exports.seller_delete_get = (req, res) => {
-    res.send('Not implemented: seller delete get');
+exports.seller_delete_get = (req, res, next) => {
+    async.parallel(
+        {
+            seller(callback) {
+                Seller.findById(req.params.id).exec(callback);
+            },
+            sellers_phones(callback) {
+                Phone.find({ seller: req.params.id }).exec(callback);
+            },
+        },
+
+        (err, results) => {
+            if (err) {
+                return next(err);
+            }
+            if (results.seller == null) {
+                res.redirect('/browse/sellers');
+            }
+            res.render('seller_delete', {
+                title: 'Delete Seller',
+                seller: results.seller,
+                seller_phones: results.sellers_phones,
+            });
+        }
+    );
 };
 
 //* Handle seller delete on POST
-exports.seller_delete_post = (req, res) => {
-    res.send('Not implemented: seller delete post');
+exports.seller_delete_post = (req, res, next) => {
+    async.parallel(
+        {
+            seller(callback) {
+                Seller.findById(req.body.sellerid).exec(callback);
+            },
+            sellers_phones(callback) {
+                Phone.find({ seller: req.body.sellerid }).exec(callback);
+            },
+        },
+
+        (err, results) => {
+            if (err) {
+                return next(err);
+            }
+
+            if (results.sellers_phones.length > 0) {
+                //* If seller has phones, we cant delete hom, so we render same page as fo GET route
+                res.render('seller_delete', {
+                    title: 'Delete Seller',
+                    seller: results.seller,
+                    seller_books: results.sellers_phones,
+                });
+            }
+
+            Seller.findByIdAndRemove(req.body.sellerid, (err) => {
+                if (err) {
+                    return next(err);
+                }
+
+                res.redirect('/browse/sellers');
+            });
+        }
+
+    );
 };
 
 //* Display seller update form on GET
