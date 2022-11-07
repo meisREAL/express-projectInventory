@@ -157,6 +157,7 @@ exports.seller_delete_post = (req, res, next) => {
                     seller: results.seller,
                     seller_books: results.sellers_phones,
                 });
+                return;
             }
 
             Seller.findByIdAndRemove(req.body.sellerid, (err) => {

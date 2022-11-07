@@ -106,13 +106,63 @@ exports.brand_create_post = [
 ];
 
 //* Display Brand delete on get
-exports.brand_delete_get = (req, res) => {
-    res.send('Not implemented: brand delete get')
+exports.brand_delete_get = (req, res, next) => {
+    async.parallel(
+        {
+            brand(callback) {
+                Brand.findById(req.params.id).exec(callback);
+            },
+            brands_phones(callback) {
+                Phone.find({ brand: req.params.id }).exec(callback);
+            },
+        },
+
+        (err, results) => {
+            if (err) {
+                return next(err);
+            }
+            if (results.brand == null) {
+                res.redirect('/browse/brands');
+            }
+            res.render('brand_delete', {
+                title: 'Delete Brand',
+                brand: results.brand,
+                brand_phones: results.brands_phones,
+            });
+        }
+    );
 }
 
 //* Handle Brand delete on POST
-exports.brand_delete_post = (req, res) => {
-    res.send('Not implemented: brand delete post');
+exports.brand_delete_post = (req, res, next) => {
+    async.parallel(
+        {
+            brand(callback) {
+                Brand.findById(req.body.brandid).exec(callback);
+            },
+            brands_phones(callback) {
+                Phone.find({ brand: req.body.brandid }).exec(callback);
+            },
+        },
+
+        (err, results) => {
+            if (err) {
+                return next(err);
+            }
+            if (results.brands_phones > 0) {
+                res.render('brand_delete', {
+                    title: 'Delete Brand',
+                    brand: results.brand,
+                    brand_phones: results.brands_phones,
+                })
+                return;
+            }
+
+            Brand.findByIdAndRemove(req.body.brandid, (err) => {
+                res.redirect('/browse/brands')
+            })
+        }
+    );
 };
 
 //* Display Brand update on GET
