@@ -1,6 +1,7 @@
 const Review = require('../models/review');
 const Phone = require('../models/phone');
 const { body, validationResult } = require("express-validator");
+const async = require('async');
 
 
 
@@ -127,11 +128,86 @@ exports.review_delete_post = (req, res, next) => {
 };
 
 //* Display review update form on GET
-exports.review_update_get = (req, res) => {
-    res.send('Not implemented: review update get');
+exports.review_update_get = (req, res, next) => {
+    async.parallel(
+        {
+            review(callback) {
+                Review.findById(req.params.id)
+                    .populate('phone')
+                    .exec(callback);
+            },
+            phones(callback) {
+                Phone.find(callback);
+            }
+        },
+        (err, results) => {
+            if (err) {
+                return next(err);
+            }
+            if (results.review == null) {
+                const err = new Error('Review not found');
+                err.status = 404;
+                return next(err);
+            }
+
+            res.render('review_form', {
+                title: 'Update Review',
+                phones: results.phones,
+                review: results.review,
+            });
+        }
+    );
 };
 
 //* Handle review update on POST
-exports.review_update_post = (req, res) => {
-    res.send('Not implemented: review update post');
-};
+exports.review_update_post = [
+    body('phone', 'Phone must be specified')
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    body('review_summary', 'Review must be specified')
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    body('reviewer', 'Reviewer must be specified')
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+        const review = new Review({
+            phone: req.body.phone,
+            review_summary: req.body.review_summary,
+            reviewer: req.body.reviewer,
+            _id: req.params.id,
+        });
+
+        if (!errors.isEmpty()) {
+            async.parallel(
+                {
+                    phones(callback) {
+                        Phone.find(callback);
+                    },
+                },
+                (err, results) => {
+                    if (err) {
+                        return next(err);
+                    }
+                    res.render('review_form', {
+                        title: 'Update Review',
+                        phones: results.phones,
+                        errors: errors.array(),
+                    })
+                }
+            );
+            return;
+        }
+        Review.findByIdAndUpdate(req.params.id, review, {}, (err, thereview) => {
+            if (err) {
+                return next(err);
+            }
+            res.redirect(thereview.url);
+        })
+    }
+];

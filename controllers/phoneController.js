@@ -232,7 +232,7 @@ exports.phone_delete_post = (req, res, next) => {
 };
 
 //* Display phone update on GET
-exports.phone_update_get = (req, res, nest) => {
+exports.phone_update_get = (req, res, next) => {
     async.parallel(
         {
             phone(callback) {
