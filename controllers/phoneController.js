@@ -4,7 +4,7 @@ const Seller = require('../models/seller');
 const Review = require('../models/review');
 const async = require('async');
 const { body, validationResult } = require("express-validator");
-const res = require('express/lib/response');
+
 
 
 //* This will be main page (home-page)
@@ -171,13 +171,64 @@ exports.phone_create_post = [
 ];
 
 //* Display phone delete FORM on GET
-exports.phone_delete_get = (req, res) => {
-    res.send('Not implemented: phone delete get');
+exports.phone_delete_get = (req, res, next) => {
+    async.parallel(
+        {
+            phone(callback) {
+                Phone.findById(req.params.id).exec(callback);
+            },
+            phones_reviews(callback) {
+                Review.find({ phone: req.params.id }).exec(callback);
+            },
+        },
+        (err, results) => {
+            if (err) {
+                return next(err);
+            }
+            if (results.phone == null) {
+                res.redirect('/browse/phones');
+            }
+            res.render('phone_delete', {
+                title: 'Delete Phone',
+                phone: results.phone,
+                phone_reviews: results.phones_reviews,
+            });
+        }
+    );
 };
 
 //* Handle phone delete on POST
-exports.phone_delete_post = (req, res) => {
-    res.send('Not implemented: phone delete post');
+exports.phone_delete_post = (req, res, next) => {
+    async.parallel(
+        {
+            phone(callback) {
+                Phone.findById(req.body.phoneid).exec(callback);
+            },
+            phones_reviews(callback) {
+                Review.find({ phone: req.body.phoneid }).exec(callback);
+            },
+        },
+
+        (err, results) => {
+            if (err) {
+                return next(err);
+            }
+            if (results.phones_reviews > 0) {
+                res.render('phone_delete', {
+                    title: 'Delete Phone',
+                    phone: results.phone,
+                    phone_reviews: results.phones_reviews,
+                });
+                return;
+            }
+            Phone.findByIdAndRemove(req.body.phoneid, (err) => {
+                if (err) {
+                    return next(err);
+                }
+                res.redirect('/browse/phones')
+            })
+        }
+    );
 };
 
 //* Display phone update on GET

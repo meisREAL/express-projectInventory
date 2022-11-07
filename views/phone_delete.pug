@@ -1,0 +1,28 @@
+extends layout
+
+block content
+
+    h1(class='text-center text-lg m-5') #{title}: #{phone.model}
+
+    if phone_reviews.length 
+
+        p(class='m-10') #[strong Delete the following reviews before attempting to delete this phone.]
+
+        div(class='m-5 p-2')
+
+            h4 Reviews
+
+            dl 
+            each review in phone_reviews
+                dt 
+                    a(href=review.url) #{review.reviewer}
+                dd #{review.review_summary}  
+
+    else 
+        p(class='m-10') Do you really want to delete this Phone?
+
+        form(method="POST")
+            div(class='m-5 p-5')
+                input#phoneid.form-control(type='hidden' name='phoneid' required='true' value=phone._id)
+
+            button(type='submit' class='m-5 underline text-red-300 hover:text-red-700') DELETE  
