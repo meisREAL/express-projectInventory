@@ -13,7 +13,7 @@ block content
                 - brands.sort(function(a, b) {let textA = a.brand_name.toUpperCase(); let textB = b.brand_name.toUpperCase(); return (textA < textB) ? 1 : (textA > textB) ? 1 : 0;});
                     for brand in brands 
                         if phone
-                            option(value=brand._id selected=(brand._id.toString()===phone.brand._id.toString() ? 'selected' : false)) #{brand.brand_name}
+                            option(value=brand._id selected=(brand._id.toString()==phone.brand._id || brand._id.toString()==phone.brand) ? 'selected' : false) #{brand.brand_name}
                         else 
                          option(value=brand._id) #{brand.brand_name}
             label(for="description") Description: 
@@ -23,7 +23,7 @@ block content
                 - sellers.sort(function(a,b){let textA = a.seller_name.toUpperCase(); let textB = b.seller_name.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
                     for seller in sellers   
                         if phone    
-                            option(value=seller._id selected=(seller._id.toString()===phone.seller._id.toString() ? 'selected' : false)) #{seller.seller_name}
+                            option(value=seller._id selected=(seller._id.toString()==phone.seller._id || seller._id.toString()==phone.seller) ? 'selected' : false) #{seller.seller_name}
                         else 
                             option(value="seller._id") #{seller.seller_name}
             button(type="submit" class='bg-gray-400 px-3 m-2 rounded') Submit 

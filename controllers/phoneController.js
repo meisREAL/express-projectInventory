@@ -232,11 +232,102 @@ exports.phone_delete_post = (req, res, next) => {
 };
 
 //* Display phone update on GET
-exports.phone_update_get = (req, res) => {
-    res.send('Not implemented: phone update get');
+exports.phone_update_get = (req, res, nest) => {
+    async.parallel(
+        {
+            phone(callback) {
+                Phone.findById(req.params.id)
+                    .populate('seller')
+                    .populate('brand')
+                    .exec(callback);
+            },
+            sellers(callback) {
+                Seller.find(callback);
+            },
+            brands(callback) {
+                Brand.find(callback);
+            },
+        },
+        (err, results) => {
+            if (err) {
+                return next(err);
+            }
+            if (results.phone == null) {
+                const err = new Error('Phone not found');
+                err.status = 404;
+                return next(err);
+            }
+            res.render('phone_form', {
+                title: 'Update Phone',
+                sellers: results.sellers,
+                brands: results.brands,
+                phone: results.phone,
+            });
+        }
+    );
 };
 
 //* Handle phone update on POST
-exports.phone_update_post = (req, res) => {
-    res.send('Not implemented: phone update post');
-};
+exports.phone_update_post = [
+    body('model', 'Model must be specified')
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    body('brand', 'Brand must be specified')
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    body('description', 'Phone must have a description')
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    body('seller', 'Seller must be specified')
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+
+        const phone = new Phone({
+            model: req.body.model,
+            brand: req.body.brand,
+            description: req.body.description,
+            seller: req.body.seller,
+            _id: req.params.id,
+        });
+
+        if (!errors.isEmpty()) {
+            async.parallel(
+                {
+                    brands(callback) {
+                        Brand.find(callback);
+                    },
+                    seller(callback) {
+                        Seller.find(callback);
+                    },
+                },
+                (err, results) => {
+                    if (err) {
+                        return next(err);
+                    }
+                    res.render('phone_form', {
+                        title: 'Update Phone',
+                        brands: results.brands,
+                        sellers: results.sellers,
+                        phone,
+                        errors: errors.array(),
+                    });
+                }
+            );
+            return;
+        }
+
+        Phone.findByIdAndUpdate(req.params.id, phone, {}, (err, thephone) => {
+            if (err) {
+                return next(err);
+            }
+            res.redirect(thephone.url)
+        })
+    }
+];
